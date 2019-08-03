@@ -82,12 +82,12 @@ if __name__ == '__main__':
   # open data config file
   try:
     print("Opening data config file %s" % FLAGS.datacfg)
-    DATA = yaml.load(open(FLAGS.datacfg, 'r'))
+    DATA = yaml.load(open(FLAGS.datacfg, 'r'), Loader=yaml.BaseLoader)
   except Exception as e:
     print(e)
     print("Error opening data yaml file.")
     quit()
-
+  print(DATA["learning_map"])
   # get number of interest classes, and the label mappings
   if FLAGS.inverse:
     print("Mapping xentropy to original labels")
@@ -99,13 +99,14 @@ if __name__ == '__main__':
   # make lookup table for mapping
   maxkey = 0
   for key, data in remapdict.items():
-    if key > maxkey:
-      maxkey = key
+      
+    if int(key) > maxkey:
+      maxkey = int(key)
   # +100 hack making lut bigger just in case there are unknown labels
   remap_lut = np.zeros((maxkey + 100), dtype=np.int32)
   for key, data in remapdict.items():
     try:
-      remap_lut[key] = data
+      remap_lut[int(key)] = int(data)
     except IndexError:
       print("Wrong key ", key)
   # print(remap_lut)
@@ -125,7 +126,7 @@ if __name__ == '__main__':
         os.path.expanduser(label_paths)) for f in fn if ".label" in f]
     seq_label_names.sort()
     label_names.extend(seq_label_names)
-  # print(label_names)
+  print(label_names)
 
   # open each file, get the tensor, and remap only the lower half (semantics)
   for label_file in label_names:
