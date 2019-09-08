@@ -28,8 +28,8 @@ if __name__ == '__main__':
             color_map_one_shot[learning_map[class_id]] = color
     nclasses = len(color_dict)
     sem_laser_scan_object = SemLaserScan(nclasses, color_dict)
-    gt_labels = [filename for filename in sorted(glob.glob(os.path.join('/home/ayush/Downloads/sequence01/sequences/' + seq_id + '/labels/', '*.label')))]
-    scans = [filename for filename in sorted(glob.glob(os.path.join('/home/ayush/Downloads/sequence01/sequences/' + seq_id + '/velodyne/', '*.bin')))]
+    gt_labels = [filename for filename in sorted(glob.glob(os.path.join('/home/dewan/data_training/dataset/sequences/' + seq_id + '/labels/', '*.label')))]
+    scans = [filename for filename in sorted(glob.glob(os.path.join('/home/dewan/data_training/dataset/sequences/' + seq_id + '/velodyne/', '*.bin')))]
 
     training_images = np.zeros((len(scans), 64, 1024, 5), np.float32)
     gt_images = np.zeros((len(scans), 64, 1024), np.float32)
@@ -78,24 +78,27 @@ if __name__ == '__main__':
         gt_images[counter, :, :] = label
         label = np.expand_dims(label, 2)
         label_colorized = np.zeros((64, 1024, 3), np.uint8)
+        #print(np.min(label))
+        #print(np.max(label))
 
         for class_id, color in color_map_one_shot.items():
             mask = np.all(label == class_id, axis=-1)
             label_colorized[mask] = color
+        #cv2.namedWindow('image')
+        #cv2.imshow('image', np.float32(label == 1))
+        #cv2.waitKey()
+
+
         # label_colorized = cv2.cvtColor(label_colorized, cv2.COLOR_BGR2RGB)
 
-        #counter += 1
+        counter += 1
         #if counter > 99:
           #  break
-    filename = '/home/ayush/Downloads/sequence01/sequences/' + seq_id + '/training_data.hdf5'
+    filename = '/home/dewan/data_training/dataset/sequences/' + seq_id + '/training_data.hdf5'
     hf = h5py.File(filename, 'w')
     hf.create_dataset('data', data=training_images)
     hf.create_dataset('label', data=gt_images)
     hf.close()
-        # cv2.namedWindow('image')
-        # cv2.imshow('image', np.uint8(training_image[:, :, 0]))
-        # cv2.waitKey()
-
-
+       
 
 
