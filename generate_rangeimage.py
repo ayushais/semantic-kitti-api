@@ -20,6 +20,8 @@ if __name__ == '__main__':
     CFG = yaml.load(open('config/semantic-kitti.yaml', 'r'))
     color_dict = CFG["color_map"]
     learning_map = CFG["learning_map"]
+    print(learning_map)
+    input()
     color_map_one_shot = {}
     for class_id, color in color_dict.items():
         if learning_map[class_id] in color_map_one_shot:
@@ -74,6 +76,9 @@ if __name__ == '__main__':
         training_image = np.concatenate((training_image, y), axis=2)
         training_image = np.concatenate((training_image, z), axis=2)
         label = sem_laser_scan_object.proj_sem_label
+   
+
+
         training_images[counter, :, :, :] = training_image
         gt_images[counter, :, :] = label
         label = np.expand_dims(label, 2)
@@ -83,19 +88,17 @@ if __name__ == '__main__':
             mask = np.all(label == class_id, axis=-1)
             label_colorized[mask] = color
         # label_colorized = cv2.cvtColor(label_colorized, cv2.COLOR_BGR2RGB)
-
-        #counter += 1
+        cv2.namedWindow('image')
+        cv2.imshow('image', np.float32(label == 1))
+        cv2.waitKey()
+        counter += 1
         #if counter > 99:
           #  break
-    filename = '/home/ayush/Downloads/sequence01/sequences/' + seq_id + '/training_data.hdf5'
-    hf = h5py.File(filename, 'w')
-    hf.create_dataset('data', data=training_images)
-    hf.create_dataset('label', data=gt_images)
-    hf.close()
-        # cv2.namedWindow('image')
-        # cv2.imshow('image', np.uint8(training_image[:, :, 0]))
-        # cv2.waitKey()
-
-
+    #filename = '/home/ayush/Downloads/sequence01/sequences/' + seq_id + '/training_data.hdf5'
+    #hf = h5py.File(filename, 'w')
+    #hf.create_dataset('data', data=training_images)
+    #hf.create_dataset('label', data=gt_images)
+    #hf.close()
+     
 
 
