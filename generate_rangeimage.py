@@ -20,8 +20,6 @@ if __name__ == '__main__':
     CFG = yaml.load(open('config/semantic-kitti.yaml', 'r'))
     color_dict = CFG["color_map"]
     learning_map = CFG["learning_map"]
-    print(learning_map)
-    input()
     color_map_one_shot = {}
     for class_id, color in color_dict.items():
         if learning_map[class_id] in color_map_one_shot:
@@ -31,14 +29,14 @@ if __name__ == '__main__':
     nclasses = len(color_dict)
     sem_laser_scan_object = SemLaserScan(nclasses, color_dict)
     #gt_labels = [filename for filename in sorted(glob.glob(os.path.join('/home/ayush/Downloads/sequence01/sequences/' + seq_id + '/labels/', '*.label')))]
-    scans = [filename for filename in sorted(glob.glob(os.path.join('/home/ayush/Downloads/sequence01/sequences/' + seq_id + '/velodyne/', '*.bin')))]
+    scans = [filename for filename in sorted(glob.glob(os.path.join('/home/dewan/data_training/dataset/sequences/' + seq_id + '/velodyne/', '*.bin')))]
 
     training_images = np.zeros((len(scans), 64, 1024, 5), np.float32)
     #gt_images = np.zeros((len(scans), 64, 1024), np.float32)
     #training_images = np.zeros((100, 64, 1024, 5), np.float32)
     #gt_images = np.zeros((100, 64, 1024), np.float32)
 
-    training_data = zip(scans, gt_labels)
+    #training_data = zip(scans, gt_labels)
     counter = 0
     for scan_filename in scans:
         sem_laser_scan_object.open_scan(scan_filename)
